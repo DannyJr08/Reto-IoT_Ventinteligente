@@ -1,0 +1,3 @@
+UPDATE temperatura
+SET valor_temperatura=NULL
+WHERE valor_temperatura=0

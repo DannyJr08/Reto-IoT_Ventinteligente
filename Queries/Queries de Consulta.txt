@@ -1,0 +1,134 @@
+-- Obtener la temperatura (°C) máxima con fecha y hora, y nombre de habitación.
+SELECT t.fecha_y_hora, h.nombre, t.valor_temperatura AS max_temperatura
+FROM temperatura AS t
+JOIN sensortemp AS st ON st.id_sensor_temp = t.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = st.id_habitacion_fk
+WHERE t.valor_temperatura = (
+    SELECT MAX(t2.valor_temperatura)
+    FROM temperatura AS t2
+);
+
+
+-- Obtener la temperatura (°C) media.
+SELECT AVG(valor_temperatura)
+FROM Temperatura
+AS temperatura_promedio;
+
+
+-- Obtener la temperatura (°C) más baja con fecha y hora, y nombre de habitación.
+SELECT t.fecha_y_hora, h.nombre, t.valor_temperatura AS min_temperatura
+FROM temperatura AS t
+JOIN sensortemp AS st ON st.id_sensor_temp = t.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = st.id_habitacion_fk
+WHERE t.valor_temperatura = (
+    SELECT MIN(t2.valor_temperatura)
+    FROM temperatura AS t2
+);
+
+
+-- Obtener el voltaje (V) máximo con fecha y hora, y nombre de habitación.
+SELECT e.fecha_y_hora, h.nombre, e.voltaje AS max_voltaje
+FROM energia AS e
+JOIN sensorwattmetro AS sw ON sw.id_sensor_wattmetro = e.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = sw.id_habitacion_fk
+WHERE e.voltaje = (
+    SELECT MAX(e2.voltaje)
+    FROM energia AS e2
+);
+
+
+-- Obtener el voltaje (V) promedio.
+SELECT AVG(voltaje)
+FROM Energia
+AS voltaje_promedio;
+
+
+-- Obtener la corriente (A) máxima con fecha y hora, y nombre de habitación.
+SELECT e.fecha_y_hora, h.nombre, e.corriente AS max_corriente
+FROM energia AS e
+JOIN sensorwattmetro AS sw ON sw.id_sensor_wattmetro = e.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = sw.id_habitacion_fk
+WHERE e.corriente = (
+    SELECT MAX(e2.corriente)
+    FROM energia AS e2
+);
+
+
+-- Obtener la corriente (A) promedio.
+SELECT AVG(corriente)
+FROM Energia
+AS corriente_promedio;
+
+
+-- Obtener la potencia (kW) máxima con fecha y hora, y nombre de habitación.
+SELECT e.fecha_y_hora, h.nombre, e.potencia AS max_potencia
+FROM energia AS e
+JOIN sensorwattmetro AS sw ON sw.id_sensor_wattmetro = e.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = sw.id_habitacion_fk
+WHERE e.potencia = (
+    SELECT MAX(e2.potencia)
+    FROM energia AS e2
+);
+
+
+-- Obtener la potencia (kW) promedio.
+SELECT AVG(potencia)
+FROM Energia
+AS potencia_promedio;
+
+
+-- Obtener la temperatura máxima de cada hora de cada día, su tiempo exacto y nombre de habitación.
+SELECT DATE(t.fecha_y_hora) AS fecha, TIME(t.fecha_y_hora) AS hora, h.nombre AS habitacion, MAX(t.valor_temperatura) AS max_temperatura
+FROM temperatura AS t
+JOIN sensortemp AS st ON st.id_sensor_temp = t.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = st.id_habitacion_fk
+GROUP BY DAY(t.fecha_y_hora), HOUR(t.fecha_y_hora);
+
+
+-- Obtener la cantidad de temperaturas registradas por día.
+SELECT DATE(t.fecha_y_hora) AS fecha, COUNT(*) AS temperaturas_registradas
+FROM temperatura AS t
+GROUP BY DATE(t.fecha_y_hora);
+
+
+-- Obtener la temperatura promedio por día con su nombre de habitación.
+SELECT DATE(t.fecha_y_hora) AS fecha, h.nombre AS Habitacion, AVG(t.valor_temperatura) AS promedio_temperatura
+FROM temperatura AS t
+JOIN sensortemp AS st ON st.id_sensor_temp = t.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = st.id_habitacion_fk
+GROUP BY DAY(t.fecha_y_hora);
+
+
+-- Obtener la cantidad de temperaturas registradas cada hora de cada día.
+SELECT DATE(t.fecha_y_hora) AS fecha, HOUR(t.fecha_y_hora) AS hora, COUNT(*) AS temperaturas_registradas
+FROM temperatura as t
+GROUP BY DATE(t.fecha_y_hora), HOUR(t.fecha_y_hora);
+
+
+-- Obtener la corriente, potencia y voltaje promedio por día y por habitación.
+SELECT DATE(e.fecha_y_hora) AS Fecha, h.nombre AS Habitacion, AVG(e.corriente) AS Promedio_corriente,
+AVG(e.potencia) AS Promedio_potencia, AVG(e.voltaje) AS Promedio_voltaje
+FROM energia AS e
+JOIN sensorwattmetro AS sw ON sw.id_sensor_wattmetro = e.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = sw.id_habitacion_fk
+GROUP BY DAY(e.fecha_y_hora), Habitacion;
+
+
+-- Obtener la máxima corriente, potencia y voltaje por día y habitación.
+SELECT DATE(e.fecha_y_hora) AS Fecha, h.nombre AS Habitacion, MAX(e.corriente) AS Max_corriente,
+MAX(e.potencia) AS Max_potencia, MAX(e.voltaje) AS Max_voltaje
+FROM energia AS e
+JOIN sensorwattmetro AS sw ON sw.id_sensor_wattmetro = e.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = sw.id_habitacion_fk
+GROUP BY DAY(e.fecha_y_hora), Habitacion;
+
+
+-- Obtener el total de corriente, potencia y voltaje por día y habitación.
+SELECT DATE(e.fecha_y_hora) AS Fecha, h.nombre AS Habitacion, SUM(e.corriente) AS Suma_corriente,
+SUM(e.potencia) AS Suma_potencia, SUM(e.voltaje) AS Suma_voltaje
+FROM energia AS e
+JOIN sensorwattmetro AS sw ON sw.id_sensor_wattmetro = e.id_sensor
+JOIN habitacion AS h ON h.id_habitacion = sw.id_habitacion_fk
+GROUP BY DAY(e.fecha_y_hora), Habitacion;
+
+

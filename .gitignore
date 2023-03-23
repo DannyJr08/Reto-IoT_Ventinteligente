@@ -1,0 +1,5 @@
+.DS_Store
+*.pdsbak
+*.pdsprj
+*.pdsprj.bak
+*.workspace

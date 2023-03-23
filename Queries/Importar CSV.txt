@@ -1,0 +1,11 @@
+-- Borra la fila con los nombres de las columnas.
+DELETE FROM temperatura_csv
+WHERE id_temperatura = "id_temperatura";
+
+INSERT INTO temperatura
+SELECT
+CONVERT (id_temperatura, unsigned int) AS id_temperatura,
+CONVERT (valor_temperatura, float) AS valor_temperatura,
+STR_TO_DATE(fecha_y_hora, "%Y-%m-%d %T") AS fecha_y_hora,
+CONVERT (id_sensor, unsigned int) AS id_sensor
+FROM temperatura_csv;
